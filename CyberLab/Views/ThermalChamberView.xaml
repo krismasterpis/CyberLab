@@ -1,0 +1,178 @@
+﻿<UserControl x:Class="CyberLab.Views.ThermalChamberView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:ScottPlot="clr-namespace:ScottPlot.WPF;assembly=ScottPlot.WPF"
+             xmlns:views="clr-namespace:CyberLab.Views"
+             mc:Ignorable="d" 
+             d:DesignHeight="1005" d:DesignWidth="1900"
+             Foreground="#E0E0E0">
+
+    <UserControl.Resources>
+        <Style TargetType="GroupBox">
+            <Setter Property="BorderBrush" Value="#555555"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="15"/>
+            <Setter Property="Margin" Value="0,0,0,15"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="GroupBox">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            <ContentPresenter ContentSource="Header" Margin="5,0,0,8"/>
+                            <Border Grid.Row="1" 
+                                    BorderBrush="{TemplateBinding BorderBrush}" 
+                                    BorderThickness="{TemplateBinding BorderThickness}" 
+                                    CornerRadius="8" 
+                                    Background="#252529">
+                                <ContentPresenter Margin="{TemplateBinding Padding}"/>
+                            </Border>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </UserControl.Resources>
+
+    <Grid Background="Transparent">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="360"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <ScrollViewer Grid.Column="0" VerticalScrollBarVisibility="Auto">
+            <StackPanel Margin="5,5,10,5">
+
+                <GroupBox>
+                    <GroupBox.Header>
+                        <TextBlock Text="CONNECTION" Foreground="#888888" FontSize="12" FontWeight="Bold"/>
+                    </GroupBox.Header>
+                    <StackPanel>
+                        <Grid Margin="0,0,0,5">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="IP Address:" VerticalAlignment="Center" Foreground="#CCCCCC" Margin="0,0,10,0"/>
+                            <TextBox Grid.Column="1" Text="{Binding IpAddress, UpdateSourceTrigger=PropertyChanged}" Padding="5" VerticalContentAlignment="Center" Background="#1E1E22" Foreground="#E0E0E0" BorderBrush="#555555"/>
+                        </Grid>
+                        <Button Content="Connect" Click="ConnectButt_Click" Style="{StaticResource ActionButtonStyle}"/>
+                    </StackPanel>
+                </GroupBox>
+
+                <GroupBox IsEnabled="{Binding IsConnected}">
+                    <GroupBox.Header>
+                        <TextBlock Text="MEASUREMENTS &amp; CONTROL" Foreground="#888888" FontSize="12" FontWeight="Bold"/>
+                    </GroupBox.Header>
+                    <StackPanel>
+                        <StackPanel Margin="0,0,0,5" TextBlock.LineHeight="22" TextBlock.FontSize="13">
+                            <TextBlock Text="{Binding ThermalChamberStatus, StringFormat=Status: {0}}" FontWeight="SemiBold"/>
+                            <TextBlock Text="{Binding CurrTemperature, StringFormat=Current Temp: {0:#.#} °C}" Foreground="#4EB4FF" FontWeight="Bold" FontSize="15" Margin="0,5"/>
+                            <TextBlock Text="{Binding CurrSetPoint, StringFormat=Setpoint Temp: {0:#.#} °C}"/>
+                            <TextBlock Text="{Binding NextSetPoint, StringFormat=Next Setpoint: {0:#.#} °C}"/>
+                        </StackPanel>
+
+                        <Grid Margin="0,0,0,5">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="100"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBox Grid.Column="0" Text="{Binding TargetTemperature, UpdateSourceTrigger=PropertyChanged}" TextChanged="SetPointTextBox_TextChanged" Padding="5" Margin="0,0,10,0" VerticalContentAlignment="Center" Background="#1E1E22" Foreground="#E0E0E0" BorderBrush="#555555"/>
+                            <Button Grid.Column="1" Content="Set Temp" Click="SetButt_Click"/>
+                        </Grid>
+
+                        <Separator Background="#333337" Margin="0,5"/>
+
+                        <Grid Margin="0,0,0,5">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="100"/>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
+                                <TextBlock Text="Interval (s):" Foreground="#CCCCCC" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                                <TextBox Width="60" Text="{Binding IntervalInput, UpdateSourceTrigger=PropertyChanged}" TextChanged="IntervalTextBox_TextChanged" Padding="5" VerticalContentAlignment="Center" Background="#1E1E22" Foreground="#E0E0E0" BorderBrush="#555555"/>
+                            </StackPanel>
+                            <Button Grid.Column="1" Content="Apply Interval" Click="IntervalChangeButt_Click" IsEnabled="{Binding IsIntervalSetted}"/>
+                        </Grid>
+
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <CheckBox Content="AutoSave" IsChecked="{Binding IsAutosaveEnabled}" Click="AutosaveCheckBox_Checked" VerticalAlignment="Center" Foreground="#CCCCCC"/>
+                            <Button Grid.Column="1" Content="Save All" Click="SaveButton_Click"/>
+                        </Grid>
+                    </StackPanel>
+                </GroupBox>
+
+                <GroupBox>
+                    <GroupBox.Header>
+                        <TextBlock Text="SETPOINTS" Foreground="#888888" FontSize="12" FontWeight="Bold"/>
+                    </GroupBox.Header>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="280"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <ContentControl Grid.Row="0" Content="{Binding SetPointsPlot, Mode=OneTime}" Margin="0,0,0,5"/>
+                        <Button Grid.Row="1" Content="Define Setpoints" Click="DefineSetpointButt_Click" Margin="0,7,0,3"/>
+                        <Button Grid.Row="2" Content="START Cycle" Click="StartButt_Click" Style="{StaticResource ActionButtonStyle}" IsEnabled="{Binding IsSetpointsSetted}"/>
+                    </Grid>
+                </GroupBox>
+
+                <GroupBox Margin="0,0,0,5">
+                    <GroupBox.Header>
+                        <TextBlock Text="GRAPH OPTIONS" Foreground="#888888" FontSize="12" FontWeight="Bold"/>
+                    </GroupBox.Header>
+                    <StackPanel>
+                        <Button Content="Clear Plot" Click="ClearButton_Click" Style="{StaticResource DangerButtonStyle}"/>
+                    </StackPanel>
+                </GroupBox>
+
+            </StackPanel>
+        </ScrollViewer>
+
+        <Grid Grid.Column="1" Margin="10,5,5,5">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <GroupBox Grid.Row="0" Margin="0,0,0,15">
+                <GroupBox.Header>
+                    <TextBlock Text="MAIN PLOT" Foreground="#888888" FontSize="12" FontWeight="Bold"/>
+                </GroupBox.Header>
+                <ContentControl Content="{Binding MainPlot, Mode=OneTime}"/>
+            </GroupBox>
+
+            <UniformGrid Grid.Row="1" Columns="3" Margin="0">
+                <GroupBox Margin="0,0,10,0">
+                    <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                        <TextBlock Text="{Binding LocalTimer2.Time, StringFormat=Next setpoint in: \{0\}}" HorizontalAlignment="Center" FontSize="15" FontWeight="Bold" Foreground="#4EB4FF" Margin="0,2"/>
+                        <TextBlock Text="{Binding LocalTimer3.Time, StringFormat=Autosave in: \{0\}}" HorizontalAlignment="Center" FontSize="13" Foreground="#A0A0A0" Margin="0,2"/>
+                    </StackPanel>
+                </GroupBox>
+
+                <GroupBox Margin="5,0,5,0">
+                    <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                        <TextBlock Text="{Binding MeasurementFails, StringFormat=Measurement fails: \{0\}}" HorizontalAlignment="Center" FontSize="16" FontWeight="Bold" Foreground="#D13438"/>
+                    </StackPanel>
+                </GroupBox>
+
+                <GroupBox Margin="10,0,0,0">
+                    <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                        <TextBlock Text="{Binding LocalTimer.Time, StringFormat=Timer: \{0\}}" HorizontalAlignment="Center" FontSize="14" FontWeight="Bold" Foreground="#4EB4FF" Margin="0,1"/>
+                        <TextBlock Text="{Binding ElapsedMs, StringFormat=Response time: \{0\} ms}" HorizontalAlignment="Center" FontSize="12" Foreground="#A0A0A0" Margin="0,1"/>
+                        <TextBlock Text="{Binding ElapsedMsAvg, StringFormat=Avg. time: \{0:#.#\} ms}" HorizontalAlignment="Center" FontSize="12" Foreground="#A0A0A0" Margin="0,1"/>
+                    </StackPanel>
+                </GroupBox>
+            </UniformGrid>
+        </Grid>
+    </Grid>
+</UserControl>

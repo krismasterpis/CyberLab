@@ -1,0 +1,127 @@
+﻿<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="clr-namespace:CyberLab"
+    xmlns:controls="clr-namespace:CyberLab.Resources.Controls">
+
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="pack://application:,,,/CyberLab;component/Resources/IconDictionary.xaml" />
+    </ResourceDictionary.MergedDictionaries>
+
+    <!-- ==================== NAV BUTTON ==================== -->
+    <!-- 
+    <Style TargetType="{x:Type controls:NavButton}">
+        <Setter Property="HorizontalAlignment" Value="Center"/>
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type controls:NavButton}">
+                    <Border x:Name="back" CornerRadius="8" Padding="{TemplateBinding Padding}" Background="Transparent" BorderThickness="0">
+                        <StackPanel Orientation="Horizontal">
+                            <Path x:Name="icon" Width="30" Height="30" Data="{TemplateBinding Icon}" Stretch="Uniform" Fill="#888888"/>
+                            <TextBlock x:Name="text" Text="{TemplateBinding NavName}" Padding="10,0,0,0" VerticalAlignment="Center" FontSize="18" FontWeight="Medium" Foreground="#CCCCCC"/>
+                        </StackPanel>
+                    </Border>
+
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background" TargetName="back" Value="#3F3F46"/>
+                            <Setter Property="Fill" TargetName="icon" Value="#FFFFFF"/>
+                            <Setter Property="Foreground" TargetName="text" Value="#FFFFFF"/>
+                        </Trigger>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter Property="Background" TargetName="back" Value="#007ACC"/>
+                            <Setter Property="Fill" TargetName="icon" Value="#FFFFFF"/>
+                            <Setter Property="Foreground" TargetName="text" Value="#FFFFFF"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    -->
+    <!-- ==================== NAV INFO BAR ==================== -->
+    <!-- 
+    <Style TargetType="{x:Type controls:NavInfoBar}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type controls:NavInfoBar}">
+                    <Border x:Name="back" CornerRadius="0,0,32,0" Width="{TemplateBinding Width}" Height="{TemplateBinding Height}" Padding="{TemplateBinding Padding}" Background="{TemplateBinding Background}" BorderThickness="0">
+                        <TextBlock x:Name="text" FontSize="24" FontWeight="Bold" Text="{TemplateBinding Text}" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="#007ACC"/>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    -->
+    <!-- ==================== MEASUREMENT TIMER ==================== -->
+    <!-- 
+    <Style TargetType="{x:Type controls:MeasurementTimer}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type controls:MeasurementTimer}">
+                    <Border Height="40" Background="#252529" CornerRadius="20" BorderBrush="#333337" BorderThickness="1" Padding="15,0,15,0">
+                        <StackPanel Orientation="Horizontal">
+                            <Button Background="Transparent" BorderThickness="0" Command="{TemplateBinding StartCommand}" Cursor="Hand">
+                                <Path x:Name="iconStart" Width="20" Height="20" Data="{StaticResource IconStart}" Stretch="Uniform" Fill="#4EB4FF" Margin="10,0,10,0"/>
+                            </Button>
+                            <Button Background="Transparent" BorderThickness="0" Command="{TemplateBinding PauseCommand}" Cursor="Hand">
+                                <Path x:Name="iconPause" Width="20" Height="20" Data="{StaticResource IconPause}" Stretch="Uniform" Fill="#4EB4FF" Margin="10,0,10,0"/>
+                            </Button>
+                            <Button Background="Transparent" BorderThickness="0" Command="{TemplateBinding RestartCommand}" Cursor="Hand">
+                                <Path x:Name="iconRestart" Width="20" Height="20" Data="{StaticResource IconRestart}" Stretch="Uniform" Fill="#4EB4FF" Margin="10,0,10,0"/>
+                            </Button>
+                            <TextBlock Text="{TemplateBinding TimeString}" FontSize="24" FontWeight="Bold" Margin="10,0,10,0" VerticalAlignment="Center" Foreground="#E0E0E0"/>
+                        </StackPanel>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    -->
+    <!-- ==================== ICON TILE ==================== -->
+    <Style TargetType="{x:Type controls:IconTile}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type controls:IconTile}">
+                    <Border x:Name="back" 
+                        CornerRadius="8" 
+                        Padding="{TemplateBinding Padding}" 
+                        Background="{TemplateBinding Background}" 
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="0">
+                        <Path x:Name="icon" 
+                          IsHitTestVisible="False"
+                          Width="{TemplateBinding IconWidth}" 
+                          Height="{TemplateBinding IconHeight}" 
+                          Data="{TemplateBinding Icon}" 
+                          Stretch="Uniform" 
+                          Fill="{TemplateBinding FillColor}"/>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- ==================== OSA TRACE CONTROL ==================== -->
+    <!--
+    <Style TargetType="{x:Type controls:OsaTraceControl}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type controls:OsaTraceControl}">
+                    <UniformGrid Columns="2" HorizontalAlignment="Center">
+                        <Button Content="{TemplateBinding Text}" FontSize="14" FontWeight="Bold" Foreground="{TemplateBinding Foreground}"/>
+
+                        <ComboBox IsEnabled="{TemplateBinding IsSelectionEnabled}" x:Name="OsaTraceControl_ComboBox" Margin="10,0,0,0" Width="80" SelectedIndex="0" VerticalContentAlignment="Center">
+                            <ComboBoxItem Content="Blank"/>
+                            <ComboBoxItem Content="Write"/>
+                            <ComboBoxItem Content="Fix"/>
+                            <ComboBoxItem Content="Calculate"/>
+                        </ComboBox>
+                    </UniformGrid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    -->
+</ResourceDictionary>
