@@ -9,7 +9,7 @@
         xmlns:ScottPlot="clr-namespace:ScottPlot.WPF;assembly=ScottPlot.WPF"
         mc:Ignorable="d"
         Title="Setpoints Configuration" Height="550" Width="900"
-        Background="#1E1E22" Foreground="#E0E0E0" WindowStartupLocation="CenterScreen"
+        Background="#252529" Foreground="#E0E0E0" WindowStartupLocation="CenterScreen"
         Loaded="MainWindow_OnLoaded" Closed="Window_Closed">
     
     <Window.Resources>

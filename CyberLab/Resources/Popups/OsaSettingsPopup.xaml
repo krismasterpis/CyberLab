@@ -1,0 +1,117 @@
+<Window x:Class="CyberLab.Resources.Popups.OsaSettingsPopup"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        Title="OSA Measurement Settings" Height="380" Width="420"
+        WindowStartupLocation="CenterOwner"
+        Background="#1E1E22" Foreground="#E0E0E0" ResizeMode="NoResize">
+    <Grid Margin="15">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <Border Grid.Row="0" CornerRadius="8" Background="#252529" Padding="12" Margin="0,0,0,12">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                <Button x:Name="applyButt" Content="Apply changes" Margin="0,0,10,0" Padding="15,6" Click="applyButt_Click"/>
+                <Button x:Name="defaultButt" Content="Restore default" Padding="15,6" Click="defaultButt_Click"/>
+            </StackPanel>
+        </Border>
+
+        <Border Grid.Row="1" CornerRadius="8" Background="#252529" Padding="15">
+            <StackPanel Orientation="Vertical">
+                <Grid Margin="0,4">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="160"/>
+                    </Grid.ColumnDefinitions>
+                    <Label Content="Resolution (nm)" Foreground="#E0E0E0" VerticalAlignment="Center"/>
+                    <ComboBox x:Name="ResComboBox" Grid.Column="1" VerticalAlignment="Center">
+                        <ComboBoxItem>0.03 nm</ComboBoxItem>
+                        <ComboBoxItem>0.05 nm</ComboBoxItem>
+                        <ComboBoxItem>0.07 nm</ComboBoxItem>
+                        <ComboBoxItem>0.10 nm</ComboBoxItem>
+                        <ComboBoxItem>0.20 nm</ComboBoxItem>
+                        <ComboBoxItem>0.50 nm</ComboBoxItem>
+                        <ComboBoxItem>1.00 nm</ComboBoxItem>
+                    </ComboBox>
+                </Grid>
+
+                <Grid Margin="0,4">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="160"/>
+                    </Grid.ColumnDefinitions>
+                    <Label Content="VBW (Hz)" Foreground="#E0E0E0" VerticalAlignment="Center"/>
+                    <ComboBox x:Name="VbwComboBox" Grid.Column="1" VerticalAlignment="Center">
+                        <ComboBoxItem>10</ComboBoxItem>
+                        <ComboBoxItem>100</ComboBoxItem>
+                        <ComboBoxItem>200</ComboBoxItem>
+                        <ComboBoxItem>1000</ComboBoxItem>
+                        <ComboBoxItem>2000</ComboBoxItem>
+                        <ComboBoxItem>10000</ComboBoxItem>
+                        <ComboBoxItem>100000</ComboBoxItem>
+                        <ComboBoxItem>1000000</ComboBoxItem>
+                    </ComboBox>
+                </Grid>
+
+                <Grid Margin="0,4">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="160"/>
+                    </Grid.ColumnDefinitions>
+                    <Label Content="Point Average (pts)" Foreground="#E0E0E0" VerticalAlignment="Center"/>
+                    <TextBox x:Name="PaTextBox" Grid.Column="1" VerticalAlignment="Center" Padding="4,2"/>
+                </Grid>
+
+                <Grid Margin="0,4">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="160"/>
+                    </Grid.ColumnDefinitions>
+                    <Label Content="Sweep Average (-)" Foreground="#E0E0E0" VerticalAlignment="Center"/>
+                    <TextBox x:Name="SaTextBox" Grid.Column="1" VerticalAlignment="Center" Padding="4,2"/>
+                </Grid>
+
+                <Grid Margin="0,4">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="160"/>
+                    </Grid.ColumnDefinitions>
+                    <Label Content="Smooth (-)" Foreground="#E0E0E0" VerticalAlignment="Center"/>
+                    <ComboBox x:Name="SmoothComboBox" Grid.Column="1" VerticalAlignment="Center" SelectedValuePath="Content">
+                        <ComboBoxItem>OFF</ComboBoxItem>
+                        <ComboBoxItem>3</ComboBoxItem>
+                        <ComboBoxItem>5</ComboBoxItem>
+                        <ComboBoxItem>7</ComboBoxItem>
+                        <ComboBoxItem>9</ComboBoxItem>
+                        <ComboBoxItem>11</ComboBoxItem>
+                    </ComboBox>
+                </Grid>
+
+                <Grid Margin="0,4">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="160"/>
+                    </Grid.ColumnDefinitions>
+                    <Label Content="Sampling Points (pts)" Foreground="#E0E0E0" VerticalAlignment="Center"/>
+                    <ComboBox x:Name="SpComboBox" Grid.Column="1" VerticalAlignment="Center">
+                        <ComboBoxItem>51</ComboBoxItem>
+                        <ComboBoxItem>101</ComboBoxItem>
+                        <ComboBoxItem>251</ComboBoxItem>
+                        <ComboBoxItem>501</ComboBoxItem>
+                        <ComboBoxItem>1001</ComboBoxItem>
+                        <ComboBoxItem>2001</ComboBoxItem>
+                        <ComboBoxItem>5001</ComboBoxItem>
+                        <ComboBoxItem>10001</ComboBoxItem>
+                        <ComboBoxItem>20001</ComboBoxItem>
+                        <ComboBoxItem>50001</ComboBoxItem>
+                    </ComboBox>
+                </Grid>
+            </StackPanel>
+        </Border>
+    </Grid>
+</Window>
+

@@ -10,6 +10,8 @@
 
   <ItemGroup>
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.2" />
+    <PackageReference Include="IviFoundation.Visa" Version="8.0.2" />
+    <PackageReference Include="NationalInstruments.Visa" Version="25.3.0.11" />
     <PackageReference Include="ScottPlot" Version="5.1.59" />
     <PackageReference Include="ScottPlot.WPF" Version="5.1.59" />
   </ItemGroup>

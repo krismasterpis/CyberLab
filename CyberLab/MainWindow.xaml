@@ -1,10 +1,11 @@
-﻿<Window x:Class="CyberLab.MainWindow"
+<Window x:Class="CyberLab.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:views="clr-namespace:CyberLab.Views"
         xmlns:viewmodels="clr-namespace:CyberLab.ViewModels"
+        xmlns:controls="clr-namespace:CyberLab.Resources.Controls"
         mc:Ignorable="d"
         Title="CyberLab - Hardware Control Dashboard" Height="1080" Width="1920"
         Background="#1E1E22" Foreground="#E0E0E0" WindowStartupLocation="CenterScreen" WindowState="Maximized">
@@ -26,24 +27,24 @@
 
         <TextBlock Text="CYBERLAB HARDWARE DASHBOARD" Foreground="#888" FontSize="14" FontWeight="Bold" Margin="10,5,0,15"/>
 
-        <TabControl Grid.Row="1" 
+        <controls:CachedTabControl Grid.Row="1" 
                     ItemsSource="{Binding DeviceViewModels}" 
                     SelectedItem="{Binding SelectedDevice}">
 
-            <TabControl.ItemTemplate>
+            <controls:CachedTabControl.ItemTemplate>
                 <DataTemplate>
                     <TextBlock Text="{Binding TabTitle}" FontSize="14" />
                 </DataTemplate>
-            </TabControl.ItemTemplate>
+            </controls:CachedTabControl.ItemTemplate>
 
-            <TabControl.ContentTemplate>
+            <controls:CachedTabControl.ContentTemplate>
                 <DataTemplate>
                     <Border Style="{StaticResource CardBorderStyle}" Margin="0,5,0,0">
                         <ContentPresenter Content="{Binding}" />
                     </Border>
                 </DataTemplate>
-            </TabControl.ContentTemplate>
+            </controls:CachedTabControl.ContentTemplate>
 
-        </TabControl>
+        </controls:CachedTabControl>
     </Grid>
 </Window>

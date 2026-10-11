@@ -1,4 +1,4 @@
-﻿<ResourceDictionary
+<ResourceDictionary
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="clr-namespace:CyberLab"
@@ -104,24 +104,56 @@
     </Style>
 
     <!-- ==================== OSA TRACE CONTROL ==================== -->
-    <!--
     <Style TargetType="{x:Type controls:OsaTraceControl}">
+        <Setter Property="HorizontalAlignment" Value="Stretch"/>
+        <Setter Property="Margin" Value="0,2"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type controls:OsaTraceControl}">
-                    <UniformGrid Columns="2" HorizontalAlignment="Center">
-                        <Button Content="{TemplateBinding Text}" FontSize="14" FontWeight="Bold" Foreground="{TemplateBinding Foreground}"/>
+                    <Border x:Name="TraceBorder" Background="#1E1E22" CornerRadius="6" BorderBrush="#38383D" BorderThickness="1" Padding="7,4">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
 
-                        <ComboBox IsEnabled="{TemplateBinding IsSelectionEnabled}" x:Name="OsaTraceControl_ComboBox" Margin="10,0,0,0" Width="80" SelectedIndex="0" VerticalContentAlignment="Center">
-                            <ComboBoxItem Content="Blank"/>
-                            <ComboBoxItem Content="Write"/>
-                            <ComboBoxItem Content="Fix"/>
-                            <ComboBoxItem Content="Calculate"/>
-                        </ComboBox>
-                    </UniformGrid>
+                            <!-- Color indicator & badge: dark pill with colored border and colored letter -->
+                            <Border Grid.Column="0" CornerRadius="4" Background="#28282E" 
+                                    BorderBrush="{TemplateBinding TraceColorBrush}" BorderThickness="2" 
+                                    Width="22" Height="22" Margin="0,0,7,0" VerticalAlignment="Center">
+                                <TextBlock Text="{TemplateBinding TraceLetter}" 
+                                           FontWeight="ExtraBold" FontSize="11" 
+                                           Foreground="{TemplateBinding TraceColorBrush}" 
+                                           HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Border>
+
+                            <!-- Trace Title / Info -->
+                            <TextBlock Grid.Column="1" Text="{TemplateBinding Text}" 
+                                       VerticalAlignment="Center" FontSize="11" FontWeight="SemiBold" 
+                                       Foreground="#E0E0E0" TextTrimming="CharacterEllipsis" Margin="0,0,4,0"/>
+
+                            <!-- Mode Selector ComboBox -->
+                            <ComboBox Grid.Column="2" IsEnabled="{TemplateBinding IsSelectionEnabled}" 
+                                      x:Name="OsaTraceControl_ComboBox" 
+                                      Width="74" Height="24" SelectedIndex="0" 
+                                      VerticalContentAlignment="Center" HorizontalContentAlignment="Center"
+                                      FontSize="11" Padding="2,1">
+                                <ComboBoxItem Content="Blank"/>
+                                <ComboBoxItem Content="Write"/>
+                                <ComboBoxItem Content="Fix"/>
+                                <ComboBoxItem Content="Calculate"/>
+                            </ComboBox>
+                        </Grid>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background" TargetName="TraceBorder" Value="#25252B"/>
+                            <Setter Property="BorderBrush" TargetName="TraceBorder" Value="#4F4F57"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
     </Style>
-    -->
 </ResourceDictionary>

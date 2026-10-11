@@ -1,4 +1,4 @@
-﻿using CyberLab;
+using CyberLab;
 using CyberLab.ViewModels;
 using CyberLab.Resources.Services;
 using CyberLab.Resources.Libraries;
@@ -216,13 +216,16 @@ namespace CyberLab.Views
 
                 var temp = TC.ReadTemperature();
 
-                if (temperatureX.Count == 0)
-                    temperatureX.Add(0);
-                else
-                    temperatureX.Add(temperatureX.Last() + TCVM.Interval);
+                Dispatcher.Invoke(() =>
+                {
+                    if (temperatureX.Count == 0)
+                        temperatureX.Add(0);
+                    else
+                        temperatureX.Add(temperatureX.Last() + TCVM.Interval);
 
-                temperatureY.Add(temp);
-                timestampList.Add(DateTime.Now);
+                    temperatureY.Add(temp);
+                    timestampList.Add(DateTime.Now);
+                });
 
                 TCVM.CurrTemperature = temp;
                 App.isThermalChamberActive = true;
@@ -293,7 +296,7 @@ namespace CyberLab.Views
                         try
                         {
                             if (!TC.checkIfConnected()) TC.Connect();
-                            else ReadTemperature();
+                            ReadTemperature();
 
                             measurementFailed = false;
                         }
@@ -309,11 +312,14 @@ namespace CyberLab.Views
 
                     if (measurementFailed)
                     {
-                        if (temperatureX.Any())
+                        Dispatcher.Invoke(() =>
                         {
-                            errorX.Add(temperatureX.Last());
-                            errorY.Add(temperatureY.Last());
-                        }
+                            if (temperatureX.Any())
+                            {
+                                errorX.Add(temperatureX.Last());
+                                errorY.Add(temperatureY.Last());
+                            }
+                        });
                         TCVM.MeasurementFails++;
                         measurementFailed = false;
                     }
@@ -355,7 +361,10 @@ namespace CyberLab.Views
 
         private async Task SetSetpointAsync()
         {
-            await _sem2.WaitAsync(0);
+            if (!await _sem2.WaitAsync(0))
+            {
+                return;
+            }
 
             try
             {
@@ -433,16 +442,19 @@ namespace CyberLab.Views
                             TCVM.LocalTimer2.Reset();
                         }
 
-                        if (tauLine == null || !TCVM.MainPlot.Plot.PlottableList.Contains(tauLine))
+                        Dispatcher.Invoke(() =>
                         {
-                            tauLine = TCVM.MainPlot.Plot.Add.HorizontalLine(tau);
-                            tauLine.LineStyle.Color = ScottPlot.Color.FromHex("#008000");
-                            tauLine.LineStyle.Pattern = LinePattern.Dashed;
-                        }
-                        else
-                        {
-                            tauLine.Y = tau;
-                        }
+                            if (tauLine == null || !TCVM.MainPlot.Plot.PlottableList.Contains(tauLine))
+                            {
+                                tauLine = TCVM.MainPlot.Plot.Add.HorizontalLine(tau);
+                                tauLine.LineStyle.Color = ScottPlot.Color.FromHex("#008000");
+                                tauLine.LineStyle.Pattern = LinePattern.Dashed;
+                            }
+                            else
+                            {
+                                tauLine.Y = tau;
+                            }
+                        });
                     }
                     else
                     {
@@ -580,6 +592,8 @@ namespace CyberLab.Views
             temperatureY.Clear();
             errorX.Clear();
             errorY.Clear();
+            timestampList.Clear();
+            
             TCVM.MainPlot.Refresh();
         }
 
@@ -587,9 +601,12 @@ namespace CyberLab.Views
         {
             var dialog = new OpenFolderDialog { Title = "Choose destination folder" };
 
-            var tempX = new List<double>(temperatureX);
-            var tempY = new List<double>(temperatureY);
-            var timeStamps = new List<DateTime>(timestampList);
+            List<double> tempX, tempY;
+            List<DateTime> timeStamps;
+            
+            tempX = new List<double>(temperatureX);
+            tempY = new List<double>(temperatureY);
+            timeStamps = new List<DateTime>(timestampList);
 
             if (dialog.ShowDialog() == true && !string.IsNullOrEmpty(dialog.FolderName))
             {
@@ -612,9 +629,15 @@ namespace CyberLab.Views
         {
             if (TCVM.LocalTimer3 != null)
             {
-                var tempX = new List<double>(temperatureX);
-                var tempY = new List<double>(temperatureY);
-                var timeStamps = new List<DateTime>(timestampList);
+                List<double> tempX = null;
+                List<double> tempY = null;
+                List<DateTime> timeStamps = null;
+                Dispatcher.Invoke(() =>
+                {
+                    tempX = new List<double>(temperatureX);
+                    tempY = new List<double>(temperatureY);
+                    timeStamps = new List<DateTime>(timestampList);
+                });
 
                 await Task.Run(async () =>
                 {

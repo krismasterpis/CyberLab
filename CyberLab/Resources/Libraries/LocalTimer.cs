@@ -1,4 +1,4 @@
-﻿using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Input;
 using ScottPlot;
 using System;
 using System.Collections.Generic;
@@ -18,11 +18,9 @@ namespace CyberLab.Resources.Libraries
     public class LocalTimer : INotifyPropertyChanged
     {
         private readonly System.Timers.Timer Timer;
-        private readonly System.Timers.Timer Counter;
         public TimeSpan _time;
         public TimeSpan estTime = TimeSpan.Zero;
         private Visibility isTimerEnabled;
-        private bool isCounterEnabled = false;
         public long Interval { get; private set; }
         public ICommand StartTimerCommand { get; }
         public ICommand PauseTimerCommand { get; }
@@ -55,10 +53,6 @@ namespace CyberLab.Resources.Libraries
             isTimerEnabled = Visibility.Hidden;
         }
 
-        private void Counter_Tick(object? sender, EventArgs e)
-        {
-            throw new NotImplementedException();
-        }
         public TimeSpan Time
         {
             get => _time;

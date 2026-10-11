@@ -1,11 +1,362 @@
-﻿<UserControl x:Class="CyberLab.Views.OsaView"
+<UserControl x:Class="CyberLab.Views.OsaView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:controls="clr-namespace:CyberLab.Resources.Controls"
              mc:Ignorable="d" 
-             d:DesignHeight="600" d:DesignWidth="800">
-    <Grid>
-        <TextBlock Text="OSA View (In Progress)" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="16" Foreground="#888888"/>
+             d:DesignHeight="1005" d:DesignWidth="1900"
+             Foreground="#E0E0E0">
+
+    <UserControl.Resources>
+        <SolidColorBrush x:Key="DarkBackgroundBrush" Color="#252529"/>
+        <SolidColorBrush x:Key="DarkControlBrush" Color="#1E1E22"/>
+        <SolidColorBrush x:Key="BorderDarkBrush" Color="#555555"/>
+        <SolidColorBrush x:Key="LabelBlueBrush" Color="#4EB4FF"/>
+        <SolidColorBrush x:Key="TextDimBrush" Color="#888888"/>
+        <SolidColorBrush x:Key="TextNormalBrush" Color="#CCCCCC"/>
+
+        <!-- Consistent CyberLab GroupBox Style -->
+        <Style TargetType="GroupBox">
+            <Setter Property="BorderBrush" Value="#555555"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="14"/>
+            <Setter Property="Margin" Value="0,0,0,14"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="GroupBox">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            <ContentPresenter ContentSource="Header" Margin="5,0,0,8"/>
+                            <Border Grid.Row="1" 
+                                    BorderBrush="{TemplateBinding BorderBrush}" 
+                                    BorderThickness="{TemplateBinding BorderThickness}" 
+                                    CornerRadius="8" 
+                                    Background="{StaticResource DarkBackgroundBrush}">
+                                <ContentPresenter Margin="{TemplateBinding Padding}"/>
+                            </Border>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Dark TextBox Style -->
+        <Style TargetType="TextBox">
+            <Setter Property="Background" Value="#1E1E22"/>
+            <Setter Property="Foreground" Value="#E0E0E0"/>
+            <Setter Property="BorderBrush" Value="#555555"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="6,4"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+        </Style>
+
+        <!-- Dark ProgressBar Style -->
+        <Style TargetType="ProgressBar">
+            <Setter Property="Background" Value="#1E1E22"/>
+            <Setter Property="Foreground" Value="#007ACC"/>
+            <Setter Property="BorderBrush" Value="#444444"/>
+            <Setter Property="BorderThickness" Value="1"/>
+        </Style>
+    </UserControl.Resources>
+
+    <!-- Clean 2-column Dashboard Layout matching ThermalChamberView -->
+    <Grid Background="Transparent">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="390"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- ==================== LEFT CONTROL PANEL ==================== -->
+        <ScrollViewer Grid.Column="0" VerticalScrollBarVisibility="Auto">
+            <StackPanel Margin="5,5,10,5">
+
+                <!-- 1. CONNECTION & HARDWARE -->
+                <GroupBox>
+                    <GroupBox.Header>
+                        <TextBlock Text="CONNECTION &amp; HARDWARE" Foreground="{StaticResource TextDimBrush}" FontSize="12" FontWeight="Bold"/>
+                    </GroupBox.Header>
+                    <StackPanel>
+                        <!-- IP Address Row -->
+                        <Grid Margin="0,0,0,10">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="IP Address:" VerticalAlignment="Center" Foreground="{StaticResource TextNormalBrush}" Margin="0,0,10,0"/>
+                            <TextBox x:Name="ipAddressTextBox" Grid.Column="1" 
+                                     Text="{Binding IpAddress, UpdateSourceTrigger=PropertyChanged}" 
+                                     TextAlignment="Center" TextChanged="ipAddressTextBox_TextChanged"/>
+                        </Grid>
+
+                        <!-- Hardware Status Pill -->
+                        <Border CornerRadius="6" Background="#1E1E22" BorderBrush="#38383D" BorderThickness="1" 
+                                Padding="10,7" Margin="0,0,0,10">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <!-- Status dot -->
+                                <Ellipse Grid.Column="0" Width="10" Height="10" Margin="0,0,8,0" VerticalAlignment="Center">
+                                    <Ellipse.Style>
+                                        <Style TargetType="Ellipse">
+                                            <Setter Property="Fill" Value="#777777"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsOSAConnected}" Value="True">
+                                                    <Setter Property="Fill" Value="#00E676"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Ellipse.Style>
+                                </Ellipse>
+                                <TextBlock Grid.Column="1" Text="{Binding DeviceIdentity, FallbackValue='Not connected'}" 
+                                           FontWeight="SemiBold" FontSize="12" Foreground="#E0E0E0" 
+                                           TextTrimming="CharacterEllipsis" VerticalAlignment="Center"/>
+                            </Grid>
+                        </Border>
+
+                        <!-- Connect & Settings Buttons -->
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <Button x:Name="ConnectButton" Grid.Column="0" Content="Connect" Click="Button_Click" 
+                                    Style="{StaticResource ActionButtonStyle}" IsEnabled="{Binding IsValidIp}" Margin="0,0,6,0"/>
+                            <Button x:Name="settingsButton" Grid.Column="1" Content="Settings" 
+                                    IsEnabled="{Binding IsOSAConnected}" Click="settingsButton_Click" Padding="14,8"/>
+                        </Grid>
+                    </StackPanel>
+                </GroupBox>
+
+                <!-- 2. CHANNEL CONFIGURATION (TRACES A - J) -->
+                <GroupBox>
+                    <GroupBox.Header>
+                        <TextBlock Text="CHANNELS (TRACES A - J)" Foreground="{StaticResource TextDimBrush}" FontSize="12" FontWeight="Bold"/>
+                    </GroupBox.Header>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <!-- Column 0: Traces A - E -->
+                        <StackPanel Grid.Column="0" Margin="0,0,4,0">
+                            <controls:OsaTraceControl x:Name="OTCA" TraceLetter="A" TraceColorBrush="#FFFF00" Text="Trace A" 
+                                                      IsSelectionEnabled="{Binding IsOSAConnected}" SelectionChanged="OsaTraceControl_SelectionChanged"/>
+                            <controls:OsaTraceControl x:Name="OTCB" TraceLetter="B" TraceColorBrush="#00FFFF" Text="Trace B" 
+                                                      IsSelectionEnabled="{Binding IsOSAConnected}" SelectionChanged="OsaTraceControl_SelectionChanged"/>
+                            <controls:OsaTraceControl x:Name="OTCC" TraceLetter="C" TraceColorBrush="#FF3D71" Text="Trace C" 
+                                                      IsSelectionEnabled="{Binding IsOSAConnected}" SelectionChanged="OsaTraceControl_SelectionChanged"/>
+                            <controls:OsaTraceControl x:Name="OTCD" TraceLetter="D" TraceColorBrush="#00FF00" Text="Trace D" 
+                                                      IsSelectionEnabled="{Binding IsOSAConnected}" SelectionChanged="OsaTraceControl_SelectionChanged"/>
+                            <controls:OsaTraceControl x:Name="OTCE" TraceLetter="E" TraceColorBrush="#FFA500" Text="Trace E" 
+                                                      IsSelectionEnabled="{Binding IsOSAConnected}" SelectionChanged="OsaTraceControl_SelectionChanged"/>
+                        </StackPanel>
+
+                        <!-- Column 1: Traces F - J -->
+                        <StackPanel Grid.Column="1" Margin="4,0,0,0">
+                            <controls:OsaTraceControl x:Name="OTCF" TraceLetter="F" TraceColorBrush="#FF00FF" Text="Trace F" 
+                                                      IsSelectionEnabled="{Binding IsOSAConnected}" SelectionChanged="OsaTraceControl_SelectionChanged"/>
+                            <controls:OsaTraceControl x:Name="OTCG" TraceLetter="G" TraceColorBrush="#00B0FF" Text="Trace G" 
+                                                      IsSelectionEnabled="{Binding IsOSAConnected}" SelectionChanged="OsaTraceControl_SelectionChanged"/>
+                            <controls:OsaTraceControl x:Name="OTCH" TraceLetter="H" TraceColorBrush="#B388FF" Text="Trace H" 
+                                                      IsSelectionEnabled="{Binding IsOSAConnected}" SelectionChanged="OsaTraceControl_SelectionChanged"/>
+                            <controls:OsaTraceControl x:Name="OTCI" TraceLetter="I" TraceColorBrush="#8D6E63" Text="Trace I" 
+                                                      IsSelectionEnabled="{Binding IsOSAConnected}" SelectionChanged="OsaTraceControl_SelectionChanged"/>
+                            <controls:OsaTraceControl x:Name="OTCJ" TraceLetter="J" TraceColorBrush="#2979FF" Text="Trace J" 
+                                                      IsSelectionEnabled="{Binding IsOSAConnected}" SelectionChanged="OsaTraceControl_SelectionChanged"/>
+                        </StackPanel>
+                    </Grid>
+                </GroupBox>
+
+                <!-- 3. SWEEP & MEASUREMENT EXECUTION -->
+                <GroupBox IsEnabled="{Binding IsOSAConnected}">
+                    <GroupBox.Header>
+                        <TextBlock Text="SWEEP &amp; MEASUREMENT CONTROL" Foreground="{StaticResource TextDimBrush}" FontSize="12" FontWeight="Bold"/>
+                    </GroupBox.Header>
+                    <StackPanel>
+                        <!-- Single Sweep & Progress Bar -->
+                        <Grid Margin="0,0,0,8">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="105"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Button x:Name="SingleButton" Content="Single Sweep" Margin="0,0,8,0" Click="SingleButton_Click"/>
+                            <ProgressBar x:Name="MeasurementProgressBar" Grid.Column="1" Value="0" Maximum="100" Height="28"/>
+                        </Grid>
+
+                        <!-- Mode Controls: Live, Loop, Stop -->
+                        <Grid Margin="0,0,0,8">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Button x:Name="LiveButton" Grid.Column="0" Content="Live" Margin="0,0,4,0" Click="LiveButton_Click"/>
+                            <Button x:Name="LoopButton" Grid.Column="1" Content="Loop" Margin="2,0,2,0" Click="LoopButton_Click" 
+                                    IsEnabled="{Binding ElementName=IntervalTextBox, Path=Text.Length, Mode=OneWay}"/>
+                            <Button x:Name="StopButton" Grid.Column="2" Content="Stop" Margin="4,0,0,0" Click="StopButton_Click" 
+                                    Style="{StaticResource DangerButtonStyle}"/>
+                        </Grid>
+
+                        <!-- Interval Input & Minimum Required Display -->
+                        <Grid Margin="0,0,0,8">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="100"/>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel VerticalAlignment="Center">
+                                <TextBlock Text="Interval (seconds):" Foreground="{StaticResource TextNormalBrush}" FontSize="12"/>
+                                <TextBlock Text="{Binding LimitStr, StringFormat=Min. req: > {0} s}" FontSize="11" Foreground="{StaticResource TextDimBrush}"/>
+                            </StackPanel>
+                            <TextBox x:Name="IntervalTextBox" Grid.Column="1" Text="5" TextAlignment="Center" 
+                                     PreviewTextInput="IntervalTextBox_PreviewTextInput" VerticalAlignment="Center" Padding="5"/>
+                        </Grid>
+
+                        <Separator Background="#333337" Margin="0,6"/>
+
+                        <!-- Save Data & Destination Folder -->
+                        <Grid Margin="0,2,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Button x:Name="saveButton" Grid.Column="0" Content="Save All" Padding="14,7" Click="saveButton_Click"/>
+                            <Button x:Name="saveSettingsButton" Grid.Column="1" Margin="6,0" Padding="8,7" 
+                                    Background="#3F3F46" Click="saveSettingsButton_Click" ToolTip="Select save destination folder">
+                                <Viewbox Width="16" Height="16">
+                                    <Path Data="{StaticResource IconSettings}" Fill="#CCCCCC"/>
+                                </Viewbox>
+                            </Button>
+                            <Border Grid.Column="2" Background="#1E1E22" CornerRadius="4" BorderBrush="#38383D" BorderThickness="1" 
+                                    Padding="8,5" VerticalAlignment="Center">
+                                <TextBlock x:Name="csvFolderPathTextBlock" Text="./csv/OSA" 
+                                           VerticalAlignment="Center" TextTrimming="CharacterEllipsis" 
+                                           FontSize="11" Foreground="{StaticResource TextDimBrush}" 
+                                           ToolTip="{Binding Text, RelativeSource={RelativeSource Self}}"/>
+                            </Border>
+                        </Grid>
+                    </StackPanel>
+                </GroupBox>
+
+                <!-- 4. CYBERLAB AUTOMATION -->
+                <GroupBox IsEnabled="{Binding IsOSAConnected}">
+                    <GroupBox.Header>
+                        <TextBlock Text="CYBERLAB AUTOMATION" Foreground="{StaticResource TextDimBrush}" FontSize="12" FontWeight="Bold"/>
+                    </GroupBox.Header>
+                    <StackPanel>
+                        <CheckBox x:Name="CyberLabEnabledCheckBox" Content="Enable CyberLab automatic saving" 
+                                  Foreground="{StaticResource TextNormalBrush}" Margin="0,0,0,8" VerticalAlignment="Center"/>
+                        <Grid Margin="0,0,0,4">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <CheckBox x:Name="TriggerCheckBox" Content="Trigger source:" VerticalAlignment="Center" 
+                                      Foreground="{StaticResource TextNormalBrush}" Margin="0,0,10,0"/>
+                            <ComboBox x:Name="TriggerComboBox" Grid.Column="1" 
+                                      IsEnabled="{Binding ElementName=TriggerCheckBox, Path=IsChecked, Mode=OneWay}" SelectedIndex="0"
+                                      Background="#1E1E22" Foreground="#E0E0E0">
+                                <ComboBoxItem Content="Thermal chamber temp."/>
+                                <ComboBoxItem Content="DAQ temp."/>
+                            </ComboBox>
+                        </Grid>
+                    </StackPanel>
+                </GroupBox>
+
+                <!-- 5. GRAPH MARKERS -->
+                <GroupBox IsEnabled="{Binding IsOSAConnected}" Margin="0,0,0,5">
+                    <GroupBox.Header>
+                        <TextBlock Text="GRAPH MARKERS" Foreground="{StaticResource TextDimBrush}" FontSize="12" FontWeight="Bold"/>
+                    </GroupBox.Header>
+                    <StackPanel>
+                        <UniformGrid Columns="2" Margin="0,2">
+                            <CheckBox Content="Add X marker A" VerticalContentAlignment="Center" Foreground="{StaticResource TextNormalBrush}"/>
+                            <CheckBox Content="Add X marker B" VerticalContentAlignment="Center" Foreground="{StaticResource TextNormalBrush}"/>
+                        </UniformGrid>
+                        <UniformGrid Columns="2" Margin="0,6,0,2">
+                            <CheckBox Content="Add Y marker A" VerticalContentAlignment="Center" Foreground="{StaticResource TextNormalBrush}"/>
+                            <CheckBox Content="Add Y marker B" VerticalContentAlignment="Center" Foreground="{StaticResource TextNormalBrush}"/>
+                        </UniformGrid>
+                    </StackPanel>
+                </GroupBox>
+
+            </StackPanel>
+        </ScrollViewer>
+
+        <!-- ==================== RIGHT VISUALIZATION & TELEMETRY ==================== -->
+        <Grid Grid.Column="1" Margin="10,5,5,5">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <!-- ROW 0: MAIN OPTICAL SPECTRUM PLOT -->
+            <GroupBox Grid.Row="0" Margin="0,0,0,15">
+                <GroupBox.Header>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="OPTICAL SPECTRUM PLOT (ANRITSU MS9740A)" Foreground="{StaticResource TextDimBrush}" 
+                                   FontSize="12" FontWeight="Bold" VerticalAlignment="Center"/>
+                        <TextBlock Grid.Column="1" Text="{Binding DeviceIdentity}" Foreground="{StaticResource LabelBlueBrush}" 
+                                   FontSize="11" FontWeight="SemiBold" VerticalAlignment="Center" Margin="0,0,5,0"/>
+                    </Grid>
+                </GroupBox.Header>
+                <ContentControl Content="{Binding OSAplot, Mode=OneTime}"/>
+            </GroupBox>
+
+            <!-- ROW 1: 3 METRIC / TELEMETRY CARDS (Identical rhythm to ThermalChamberView) -->
+            <UniformGrid Grid.Row="1" Columns="3" Margin="0">
+                <!-- Card 1: Sweep Duration -->
+                <GroupBox Margin="0,0,10,0">
+                    <GroupBox.Header>
+                        <TextBlock Text="SWEEP TIMING" Foreground="{StaticResource TextDimBrush}" FontSize="11" FontWeight="Bold"/>
+                    </GroupBox.Header>
+                    <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                        <TextBlock x:Name="ElapsedTimeTextBlock" Text="{Binding ElapsedMs, StringFormat=Duration: {0} ms}" 
+                                   HorizontalAlignment="Center" FontSize="16" FontWeight="Bold" Foreground="{StaticResource LabelBlueBrush}" Margin="0,2"/>
+                        <TextBlock Text="{Binding LimitStr, StringFormat=Min. req. interval: > {0} s}" 
+                                   HorizontalAlignment="Center" FontSize="12" Foreground="{StaticResource TextDimBrush}" Margin="0,2"/>
+                    </StackPanel>
+                </GroupBox>
+
+                <!-- Card 2: Sweep Cycle & Count -->
+                <GroupBox Margin="5,0,5,0">
+                    <GroupBox.Header>
+                        <TextBlock Text="SCHEDULE &amp; COUNT" Foreground="{StaticResource TextDimBrush}" FontSize="11" FontWeight="Bold"/>
+                    </GroupBox.Header>
+                    <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                        <TextBlock Text="{Binding LocalTime, StringFormat=Next sweep in: {0:mm\\:ss}}" 
+                                   HorizontalAlignment="Center" FontSize="16" FontWeight="Bold" Foreground="{StaticResource LabelBlueBrush}" Margin="0,2"/>
+                        <TextBlock Text="{Binding LocalMeasNum, StringFormat=Completed sweeps: {0}}" 
+                                   HorizontalAlignment="Center" FontSize="12" Foreground="{StaticResource TextNormalBrush}" Margin="0,2"/>
+                    </StackPanel>
+                </GroupBox>
+
+                <!-- Card 3: Instrument & Chamber Telemetry -->
+                <GroupBox Margin="10,0,0,0">
+                    <GroupBox.Header>
+                        <TextBlock Text="INSTRUMENT &amp; THERMAL" Foreground="{StaticResource TextDimBrush}" FontSize="11" FontWeight="Bold"/>
+                    </GroupBox.Header>
+                    <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                        <TextBlock x:Name="DeviceTextBlock" Text="{Binding DeviceIdentity}" 
+                                   HorizontalAlignment="Center" FontSize="14" FontWeight="Bold" Foreground="{StaticResource LabelBlueBrush}" 
+                                   TextTrimming="CharacterEllipsis" Margin="0,2"/>
+                        <TextBlock Text="{Binding ChamberTemp, StringFormat=Chamber Temp: {0}}" 
+                                   HorizontalAlignment="Center" FontSize="12" Foreground="{StaticResource TextDimBrush}" Margin="0,2"/>
+                    </StackPanel>
+                </GroupBox>
+            </UniformGrid>
+
+        </Grid>
     </Grid>
 </UserControl>
