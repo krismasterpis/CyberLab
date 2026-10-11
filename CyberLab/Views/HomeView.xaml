@@ -1,0 +1,717 @@
+<UserControl x:Class="CyberLab.Views.HomeView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             d:DesignHeight="1005" d:DesignWidth="1900"
+             Foreground="#E0E0E0">
+
+    <UserControl.Resources>
+        <SolidColorBrush x:Key="DarkBackgroundBrush" Color="#252529"/>
+        <SolidColorBrush x:Key="DarkControlBrush" Color="#1E1E22"/>
+        <SolidColorBrush x:Key="BorderDarkBrush" Color="#555555"/>
+        <SolidColorBrush x:Key="LabelBlueBrush" Color="#4EB4FF"/>
+        <SolidColorBrush x:Key="TextDimBrush" Color="#888888"/>
+        <SolidColorBrush x:Key="TextNormalBrush" Color="#CCCCCC"/>
+
+        <!-- Consistent CyberLab GroupBox Style -->
+        <Style TargetType="GroupBox">
+            <Setter Property="BorderBrush" Value="#555555"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="14"/>
+            <Setter Property="Margin" Value="0,0,0,12"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="GroupBox">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            <ContentPresenter ContentSource="Header" Margin="5,0,0,8"/>
+                            <Border Grid.Row="1" 
+                                    BorderBrush="{TemplateBinding BorderBrush}" 
+                                    BorderThickness="{TemplateBinding BorderThickness}" 
+                                    CornerRadius="8" 
+                                    Background="{StaticResource DarkBackgroundBrush}">
+                                <ContentPresenter Margin="{TemplateBinding Padding}"/>
+                            </Border>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Dark ProgressBar Style -->
+        <Style TargetType="ProgressBar">
+            <Setter Property="Background" Value="#1E1E22"/>
+            <Setter Property="Foreground" Value="#007ACC"/>
+            <Setter Property="BorderBrush" Value="#444444"/>
+            <Setter Property="BorderThickness" Value="1"/>
+        </Style>
+    </UserControl.Resources>
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+        <StackPanel Margin="10,5,10,15">
+
+            <!-- ========================================================================= -->
+            <!-- 1. GŁÓWNA WYSPA: MISSION CONTROL, CYBERLAB ROUTINE & SYSTEM HEALTH       -->
+            <!-- ========================================================================= -->
+            <GroupBox Margin="0,0,0,14">
+                <GroupBox.Header>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="CYBERLAB MISSION CONTROL &amp; SYSTEM HEALTH" Foreground="{StaticResource TextDimBrush}" FontSize="13" FontWeight="Bold"/>
+                        <TextBlock Grid.Column="1" Text="OVERVIEW DASHBOARD" Foreground="{StaticResource LabelBlueBrush}" FontSize="12" FontWeight="SemiBold" Margin="0,0,5,0"/>
+                    </Grid>
+                </GroupBox.Header>
+
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="340"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="380"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!-- COL 0: GLOBAL APPLICATION STATUS & MEASUREMENT TIMER -->
+                    <Border Grid.Column="0" Background="#1E1E22" CornerRadius="6" BorderBrush="#38383D" BorderThickness="1" Padding="14,12" Margin="0,0,12,0">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+
+                            <TextBlock Grid.Row="0" Text="GLOBAL STATUS &amp; SESSION" Foreground="{StaticResource TextDimBrush}" FontSize="11" FontWeight="Bold" Margin="0,0,0,8"/>
+
+                            <!-- Status Pill -->
+                            <Border Grid.Row="1" CornerRadius="4" Background="#28282E" BorderBrush="#38383D" BorderThickness="1" Padding="8,4" Margin="0,0,0,10">
+                                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                    <Ellipse Width="8" Height="8" Margin="0,0,7,0" VerticalAlignment="Center">
+                                        <Ellipse.Style>
+                                            <Style TargetType="Ellipse">
+                                                <Setter Property="Fill" Value="#777777"/>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding IsSessionRunning}" Value="True">
+                                                        <Setter Property="Fill" Value="#00E676"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Ellipse.Style>
+                                    </Ellipse>
+                                    <TextBlock Text="{Binding GlobalAppStatus}" FontWeight="SemiBold" FontSize="12" Foreground="#E0E0E0"/>
+                                </StackPanel>
+                            </Border>
+
+                            <!-- Session Elapsed Timer -->
+                            <StackPanel Grid.Row="2" Margin="0,0,0,12" HorizontalAlignment="Center">
+                                <TextBlock Text="SESSION DURATION" FontSize="11" Foreground="{StaticResource TextDimBrush}" HorizontalAlignment="Center" Margin="0,0,0,2"/>
+                                <TextBlock Text="{Binding SessionElapsedStr}" FontSize="28" FontWeight="Bold" Foreground="{StaticResource LabelBlueBrush}" HorizontalAlignment="Center"/>
+                            </StackPanel>
+
+                            <!-- Controls -->
+                            <UniformGrid Grid.Row="3" Columns="3" VerticalAlignment="Bottom">
+                                <Button Content="Start" Command="{Binding StartSessionCommand}" Style="{StaticResource ActionButtonStyle}" Margin="0,0,3,0" Padding="6,4"/>
+                                <Button Content="Pause" Command="{Binding PauseSessionCommand}" Margin="3,0,3,0" Padding="6,4"/>
+                                <Button Content="Reset" Command="{Binding ResetSessionCommand}" Style="{StaticResource DangerButtonStyle}" Margin="3,0,0,0" Padding="6,4"/>
+                            </UniformGrid>
+                        </Grid>
+                    </Border>
+
+                    <!-- COL 1: CYBERLAB ROUTINE ENGINE (PREVIEW & CONTROL) -->
+                    <Border Grid.Column="1" Background="#1E1E22" CornerRadius="6" BorderBrush="#38383D" BorderThickness="1" Padding="14,12" Margin="0,0,12,0">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+
+                            <Grid Grid.Row="0" Margin="0,0,0,8">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="CYBERLAB AUTOMATION ROUTINE ENGINE" Foreground="{StaticResource TextDimBrush}" FontSize="11" FontWeight="Bold"/>
+                                <TextBlock Grid.Column="1" Text="{Binding RoutineStatus}" Foreground="{StaticResource LabelBlueBrush}" FontSize="11" FontWeight="SemiBold"/>
+                            </Grid>
+
+                            <!-- Routine Title & Description -->
+                            <TextBlock Grid.Row="1" Text="{Binding RoutineName}" FontSize="15" FontWeight="Bold" Foreground="#FFFFFF" Margin="0,0,0,4"/>
+                            <TextBlock Grid.Row="2" Text="{Binding RoutineStepDescription}" FontSize="12" Foreground="{StaticResource TextNormalBrush}" TextWrapping="Wrap" Margin="0,0,0,10"/>
+
+                            <!-- Progress Bar -->
+                            <Grid Grid.Row="3" Margin="0,0,0,10">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+                                <Grid Margin="0,0,0,4">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text="Sequence Progress:" FontSize="11" Foreground="{StaticResource TextDimBrush}"/>
+                                    <TextBlock Grid.Column="1" Text="{Binding RoutineProgressPercent, StringFormat={}{0:0.#}%}" FontSize="11" FontWeight="Bold" Foreground="{StaticResource LabelBlueBrush}"/>
+                                </Grid>
+                                <ProgressBar Grid.Row="1" Value="{Binding RoutineProgressPercent}" Height="10" Minimum="0" Maximum="100"/>
+                            </Grid>
+
+                            <!-- Action Button to Switch Tab -->
+                            <Button Grid.Row="4" Content="Open CyberLab Routine Builder ➔" 
+                                    Command="{Binding NavigateToTabCommand}" CommandParameter="CyberLab"
+                                    HorizontalAlignment="Right" VerticalAlignment="Bottom" Padding="16,6"
+                                    Style="{StaticResource ActionButtonStyle}"/>
+                        </Grid>
+                    </Border>
+
+                    <!-- COL 2: SYSTEM HEALTH (CPU, RAM, BATTERY) -->
+                    <Border Grid.Column="2" Background="#1E1E22" CornerRadius="6" BorderBrush="#38383D" BorderThickness="1" Padding="14,12">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+
+                            <TextBlock Grid.Row="0" Text="HOST PC &amp; SYSTEM HEALTH" Foreground="{StaticResource TextDimBrush}" FontSize="11" FontWeight="Bold" Margin="0,0,0,10"/>
+
+                            <!-- CPU Usage -->
+                            <Grid Grid.Row="1" Margin="0,0,0,10">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+                                <Grid Margin="0,0,0,3">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text="CPU Utilization:" FontSize="12" Foreground="{StaticResource TextNormalBrush}"/>
+                                    <TextBlock Grid.Column="1" Text="{Binding CpuLoadStr}" FontSize="12" FontWeight="Bold" Foreground="{StaticResource LabelBlueBrush}"/>
+                                </Grid>
+                                <ProgressBar Grid.Row="1" Value="{Binding CpuLoadPercent}" Height="8" Minimum="0" Maximum="100"/>
+                            </Grid>
+
+                            <!-- RAM Usage -->
+                            <Grid Grid.Row="2" Margin="0,0,0,10">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+                                <Grid Margin="0,0,0,3">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text="RAM Memory Load:" FontSize="12" Foreground="{StaticResource TextNormalBrush}"/>
+                                    <TextBlock Grid.Column="1" Text="{Binding RamUsedStr}" FontSize="12" FontWeight="Bold" Foreground="{StaticResource LabelBlueBrush}"/>
+                                </Grid>
+                                <ProgressBar Grid.Row="1" Value="{Binding RamLoadPercent}" Height="8" Minimum="0" Maximum="100"/>
+                            </Grid>
+
+                            <!-- Power / Battery Status -->
+                            <Border Grid.Row="3" Background="#28282E" CornerRadius="4" BorderBrush="#38383D" BorderThickness="1" Padding="10,7">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel Orientation="Vertical">
+                                        <TextBlock Text="Power / Battery:" FontSize="11" Foreground="{StaticResource TextDimBrush}"/>
+                                        <TextBlock Text="{Binding BatteryStatusStr}" FontSize="12" FontWeight="SemiBold" Foreground="#00E676" Margin="0,2,0,0"/>
+                                    </StackPanel>
+                                    <TextBlock Grid.Column="1" Text="{Binding BatteryPercent, StringFormat={}{0}%}" 
+                                               FontSize="16" FontWeight="Bold" Foreground="{StaticResource LabelBlueBrush}" VerticalAlignment="Center"/>
+                                </Grid>
+                            </Border>
+                        </Grid>
+                    </Border>
+                </Grid>
+            </GroupBox>
+
+            <!-- ========================================================================= -->
+            <!-- 2. DEVICE ISLANDS GRID (6 INSTRUMENT ISLANDS)                            -->
+            <!-- ========================================================================= -->
+            <UniformGrid Columns="3" Margin="0">
+
+                <!-- WYSPA 1: TEMPERATURA (KOMORA TERMICZNA & REFERENCYJNA DAQ) -->
+                <GroupBox Margin="0,0,8,12">
+                    <GroupBox.Header>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="TEMPERATURE (CHAMBER &amp; DAQ)" Foreground="{StaticResource TextDimBrush}" FontSize="12" FontWeight="Bold"/>
+                            <Button Grid.Column="1" Content="Open ➔" Style="{StaticResource ActionButtonStyle}"
+                                    Command="{Binding NavigateToTabCommand}" CommandParameter="Thermal Chamber"
+                                    Padding="8,2" Margin="0" FontSize="11"/>
+                        </Grid>
+                    </GroupBox.Header>
+                    <StackPanel>
+                        <!-- Chamber Status Pill -->
+                        <Border CornerRadius="6" Background="#1E1E22" BorderBrush="#38383D" BorderThickness="1" Padding="10,6" Margin="0,0,0,8">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Ellipse Grid.Column="0" Width="9" Height="9" Margin="0,0,7,0" VerticalAlignment="Center">
+                                    <Ellipse.Style>
+                                        <Style TargetType="Ellipse">
+                                            <Setter Property="Fill" Value="#777777"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding ThermalChamber.IsConnected}" Value="True">
+                                                    <Setter Property="Fill" Value="#00E676"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Ellipse.Style>
+                                </Ellipse>
+                                <TextBlock Grid.Column="1" Text="{Binding ThermalChamber.DeviceIdentity, FallbackValue='Chamber: Not connected'}" 
+                                           FontWeight="SemiBold" FontSize="11" Foreground="#E0E0E0" TextTrimming="CharacterEllipsis"/>
+                            </Grid>
+                        </Border>
+
+                        <!-- Live Chamber & Ref Temp Displays -->
+                        <Grid Margin="0,0,0,8">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Border Grid.Column="0" Background="#1E1E22" CornerRadius="4" Padding="8,6" Margin="0,0,4,0">
+                                <StackPanel>
+                                    <TextBlock Text="Chamber Temp:" FontSize="11" Foreground="{StaticResource TextDimBrush}"/>
+                                    <TextBlock Text="{Binding ThermalChamber.CurrTemperature, StringFormat={}{0:#.0} °C, FallbackValue='-- °C'}" 
+                                               FontSize="18" FontWeight="Bold" Foreground="{StaticResource LabelBlueBrush}" Margin="0,2,0,0"/>
+                                </StackPanel>
+                            </Border>
+                            <Border Grid.Column="1" Background="#1E1E22" CornerRadius="4" Padding="8,6" Margin="4,0,0,0">
+                                <StackPanel>
+                                    <TextBlock Text="Reference Temp:" FontSize="11" Foreground="{StaticResource TextDimBrush}"/>
+                                    <TextBlock Text="{Binding RefTemperature, StringFormat={}{0:#.00} °C}" 
+                                               FontSize="18" FontWeight="Bold" Foreground="#00E676" Margin="0,2,0,0"/>
+                                </StackPanel>
+                            </Border>
+                        </Grid>
+
+                        <!-- Setpoints & Operating State -->
+                        <Border Background="#1E1E22" CornerRadius="4" Padding="10,7">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Grid.Column="0">
+                                    <TextBlock Text="{Binding ThermalChamber.CurrSetPoint, StringFormat=Setpoint: {0:#.0} °C, FallbackValue='Setpoint: --'}" 
+                                               FontSize="11" Foreground="{StaticResource TextNormalBrush}"/>
+                                    <TextBlock Text="{Binding ThermalChamber.NextSetPoint, StringFormat=Next: {0:#.0} °C, FallbackValue='Next: --'}" 
+                                               FontSize="11" Foreground="{StaticResource TextDimBrush}" Margin="0,2,0,0"/>
+                                </StackPanel>
+                                <StackPanel Grid.Column="1" HorizontalAlignment="Right">
+                                    <TextBlock Text="{Binding ThermalChamber.ThermalChamberStatus, StringFormat=Status: {0}, FallbackValue='Status: Idle'}" 
+                                               FontSize="11" FontWeight="SemiBold" Foreground="{StaticResource LabelBlueBrush}"/>
+                                    <TextBlock Text="{Binding RefTempDeviceName}" FontSize="10" Foreground="{StaticResource TextDimBrush}" Margin="0,2,0,0"/>
+                                </StackPanel>
+                            </Grid>
+                        </Border>
+                    </StackPanel>
+                </GroupBox>
+
+                <!-- WYSPA 2: OSA (OPTICAL SPECTRUM ANALYZER) -->
+                <GroupBox Margin="4,0,4,12">
+                    <GroupBox.Header>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="OPTICAL SPECTRUM ANALYZER (OSA)" Foreground="{StaticResource TextDimBrush}" FontSize="12" FontWeight="Bold"/>
+                            <Button Grid.Column="1" Content="Open ➔" Style="{StaticResource ActionButtonStyle}"
+                                    Command="{Binding NavigateToTabCommand}" CommandParameter="OSA Measurement"
+                                    Padding="8,2" Margin="0" FontSize="11"/>
+                        </Grid>
+                    </GroupBox.Header>
+                    <StackPanel>
+                        <!-- OSA Status Pill -->
+                        <Border CornerRadius="6" Background="#1E1E22" BorderBrush="#38383D" BorderThickness="1" Padding="10,6" Margin="0,0,0,8">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Ellipse Grid.Column="0" Width="9" Height="9" Margin="0,0,7,0" VerticalAlignment="Center">
+                                    <Ellipse.Style>
+                                        <Style TargetType="Ellipse">
+                                            <Setter Property="Fill" Value="#777777"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding Osa.IsOSAConnected}" Value="True">
+                                                    <Setter Property="Fill" Value="#00E676"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Ellipse.Style>
+                                </Ellipse>
+                                <TextBlock Grid.Column="1" Text="{Binding Osa.DeviceIdentity, FallbackValue='OSA: Not connected'}" 
+                                           FontWeight="SemiBold" FontSize="11" Foreground="#E0E0E0" TextTrimming="CharacterEllipsis"/>
+                            </Grid>
+                        </Border>
+
+                        <!-- Sweep Status & Sweeps Count -->
+                        <Grid Margin="0,0,0,8">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Border Grid.Column="0" Background="#1E1E22" CornerRadius="4" Padding="8,6" Margin="0,0,4,0">
+                                <StackPanel>
+                                    <TextBlock Text="Measurement State:" FontSize="11" Foreground="{StaticResource TextDimBrush}"/>
+                                    <TextBlock Text="{Binding OsaMeasurementState}" 
+                                               FontSize="15" FontWeight="Bold" Foreground="{StaticResource LabelBlueBrush}" Margin="0,3,0,0"/>
+                                </StackPanel>
+                            </Border>
+                            <Border Grid.Column="1" Background="#1E1E22" CornerRadius="4" Padding="8,6" Margin="4,0,0,0">
+                                <StackPanel>
+                                    <TextBlock Text="Completed Sweeps:" FontSize="11" Foreground="{StaticResource TextDimBrush}"/>
+                                    <TextBlock Text="{Binding Osa.LocalMeasNum, FallbackValue=0}" 
+                                               FontSize="18" FontWeight="Bold" Foreground="#00E676" Margin="0,2,0,0"/>
+                                </StackPanel>
+                            </Border>
+                        </Grid>
+
+                        <!-- Telemetry details -->
+                        <Border Background="#1E1E22" CornerRadius="4" Padding="10,7">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Grid.Column="0">
+                                    <TextBlock Text="{Binding Osa.ElapsedMs, StringFormat=Last sweep: {0} ms, FallbackValue='Last sweep: --'}" 
+                                               FontSize="11" Foreground="{StaticResource TextNormalBrush}"/>
+                                    <TextBlock Text="{Binding Osa.LimitStr, StringFormat=Min. interval: > {0} s, FallbackValue='Min interval: --'}" 
+                                               FontSize="11" Foreground="{StaticResource TextDimBrush}" Margin="0,2,0,0"/>
+                                </StackPanel>
+                                <StackPanel Grid.Column="1" HorizontalAlignment="Right">
+                                    <TextBlock Text="Span: 1520 - 1580 nm" FontSize="11" Foreground="{StaticResource TextNormalBrush}"/>
+                                    <TextBlock Text="Resolution: 0.10 nm" FontSize="10" Foreground="{StaticResource TextDimBrush}" Margin="0,2,0,0"/>
+                                </StackPanel>
+                            </Grid>
+                        </Border>
+                    </StackPanel>
+                </GroupBox>
+
+                <!-- WYSPA 3: LASERY (TUNABLE LASER SOURCES) -->
+                <GroupBox Margin="8,0,0,12">
+                    <GroupBox.Header>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="TUNABLE LASER SOURCES" Foreground="{StaticResource TextDimBrush}" FontSize="12" FontWeight="Bold"/>
+                            <Button Grid.Column="1" Content="Open ➔" Style="{StaticResource ActionButtonStyle}"
+                                    Command="{Binding NavigateToTabCommand}" CommandParameter="Lasers"
+                                    Padding="8,2" Margin="0" FontSize="11"/>
+                        </Grid>
+                    </GroupBox.Header>
+                    <StackPanel>
+                        <!-- Lasers Status Pill -->
+                        <Border CornerRadius="6" Background="#1E1E22" BorderBrush="#38383D" BorderThickness="1" Padding="10,6" Margin="0,0,0,8">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Ellipse Grid.Column="0" Width="9" Height="9" Margin="0,0,7,0" VerticalAlignment="Center">
+                                    <Ellipse.Style>
+                                        <Style TargetType="Ellipse">
+                                            <Setter Property="Fill" Value="#777777"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsLasersConnected}" Value="True">
+                                                    <Setter Property="Fill" Value="#00E676"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Ellipse.Style>
+                                </Ellipse>
+                                <TextBlock Grid.Column="1" Text="{Binding LasersDeviceName}" 
+                                           FontWeight="SemiBold" FontSize="11" Foreground="#E0E0E0" TextTrimming="CharacterEllipsis"/>
+                            </Grid>
+                        </Border>
+
+                        <!-- Laser Parameters -->
+                        <Grid Margin="0,0,0,8">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Border Grid.Column="0" Background="#1E1E22" CornerRadius="4" Padding="8,6" Margin="0,0,4,0">
+                                <StackPanel>
+                                    <TextBlock Text="Optical Power:" FontSize="11" Foreground="{StaticResource TextDimBrush}"/>
+                                    <TextBlock Text="{Binding LaserPowerDbm, StringFormat={}{0:0.0} dBm}" 
+                                               FontSize="18" FontWeight="Bold" Foreground="#FFA500" Margin="0,2,0,0"/>
+                                </StackPanel>
+                            </Border>
+                            <Border Grid.Column="1" Background="#1E1E22" CornerRadius="4" Padding="8,6" Margin="4,0,0,0">
+                                <StackPanel>
+                                    <TextBlock Text="Wavelength:" FontSize="11" Foreground="{StaticResource TextDimBrush}"/>
+                                    <TextBlock Text="{Binding LaserWavelength, StringFormat={}{0:0.00} nm}" 
+                                               FontSize="18" FontWeight="Bold" Foreground="{StaticResource LabelBlueBrush}" Margin="0,2,0,0"/>
+                                </StackPanel>
+                            </Border>
+                        </Grid>
+
+                        <!-- Emission Status & Remote IP -->
+                        <Border Background="#1E1E22" CornerRadius="4" Padding="10,7">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Grid.Column="0">
+                                    <TextBlock Text="{Binding LaserEmissionState, StringFormat=Emission: {0}}" 
+                                               FontSize="11" FontWeight="Bold" Foreground="#FFA500"/>
+                                    <TextBlock Text="Channel: Primary CH 1" FontSize="10" Foreground="{StaticResource TextDimBrush}" Margin="0,2,0,0"/>
+                                </StackPanel>
+                                <StackPanel Grid.Column="1" HorizontalAlignment="Right">
+                                    <TextBlock Text="Web UI Available" FontSize="11" Foreground="#00E676"/>
+                                    <TextBlock Text="Port: 2150 (HTTP)" FontSize="10" Foreground="{StaticResource TextDimBrush}" Margin="0,2,0,0"/>
+                                </StackPanel>
+                            </Grid>
+                        </Border>
+                    </StackPanel>
+                </GroupBox>
+
+                <!-- WYSPA 4: SWITCH (OPTICAL MATRIX SWITCH) -->
+                <GroupBox Margin="0,0,8,0">
+                    <GroupBox.Header>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="OPTICAL SWITCH MATRIX" Foreground="{StaticResource TextDimBrush}" FontSize="12" FontWeight="Bold"/>
+                            <Button Grid.Column="1" Content="Open ➔" Style="{StaticResource ActionButtonStyle}"
+                                    Command="{Binding NavigateToTabCommand}" CommandParameter="Switch"
+                                    Padding="8,2" Margin="0" FontSize="11"/>
+                        </Grid>
+                    </GroupBox.Header>
+                    <StackPanel>
+                        <!-- Switch Status Pill -->
+                        <Border CornerRadius="6" Background="#1E1E22" BorderBrush="#38383D" BorderThickness="1" Padding="10,6" Margin="0,0,0,8">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Ellipse Grid.Column="0" Width="9" Height="9" Margin="0,0,7,0" VerticalAlignment="Center">
+                                    <Ellipse.Style>
+                                        <Style TargetType="Ellipse">
+                                            <Setter Property="Fill" Value="#777777"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsSwitchConnected}" Value="True">
+                                                    <Setter Property="Fill" Value="#00E676"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Ellipse.Style>
+                                </Ellipse>
+                                <TextBlock Grid.Column="1" Text="{Binding SwitchDeviceName}" 
+                                           FontWeight="SemiBold" FontSize="11" Foreground="#E0E0E0" TextTrimming="CharacterEllipsis"/>
+                            </Grid>
+                        </Border>
+
+                        <!-- Active Route Pill -->
+                        <Border Background="#1E1E22" CornerRadius="4" Padding="10,8" Margin="0,0,0,8">
+                            <StackPanel>
+                                <TextBlock Text="Active Optical Route:" FontSize="11" Foreground="{StaticResource TextDimBrush}"/>
+                                <TextBlock Text="{Binding SwitchCurrentRoute}" FontSize="16" FontWeight="Bold" Foreground="{StaticResource LabelBlueBrush}" Margin="0,3,0,0"/>
+                            </StackPanel>
+                        </Border>
+
+                        <Border Background="#1E1E22" CornerRadius="4" Padding="10,7">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Grid.Column="0">
+                                    <TextBlock Text="{Binding SwitchMode, StringFormat=Mode: {0}}" FontSize="11" Foreground="{StaticResource TextNormalBrush}"/>
+                                    <TextBlock Text="Configuration: 1x16" FontSize="10" Foreground="{StaticResource TextDimBrush}" Margin="0,2,0,0"/>
+                                </StackPanel>
+                                <StackPanel Grid.Column="1" HorizontalAlignment="Right">
+                                    <TextBlock Text="Insertion Loss: &lt; 0.8 dB" FontSize="11" Foreground="{StaticResource TextDimBrush}"/>
+                                    <TextBlock Text="Repeatability: ±0.01 dB" FontSize="10" Foreground="{StaticResource TextDimBrush}" Margin="0,2,0,0"/>
+                                </StackPanel>
+                            </Grid>
+                        </Border>
+                    </StackPanel>
+                </GroupBox>
+
+                <!-- WYSPA 5: INTERROGATOR (FBG SENSOR SYSTEM) -->
+                <GroupBox Margin="4,0,4,0">
+                    <GroupBox.Header>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="FBG SENSOR INTERROGATOR" Foreground="{StaticResource TextDimBrush}" FontSize="12" FontWeight="Bold"/>
+                            <Button Grid.Column="1" Content="Open ➔" Style="{StaticResource ActionButtonStyle}"
+                                    Command="{Binding NavigateToTabCommand}" CommandParameter="Interrogator"
+                                    Padding="8,2" Margin="0" FontSize="11"/>
+                        </Grid>
+                    </GroupBox.Header>
+                    <StackPanel>
+                        <!-- Interrogator Status Pill -->
+                        <Border CornerRadius="6" Background="#1E1E22" BorderBrush="#38383D" BorderThickness="1" Padding="10,6" Margin="0,0,0,8">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Ellipse Grid.Column="0" Width="9" Height="9" Margin="0,0,7,0" VerticalAlignment="Center">
+                                    <Ellipse.Style>
+                                        <Style TargetType="Ellipse">
+                                            <Setter Property="Fill" Value="#777777"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsInterrogatorConnected}" Value="True">
+                                                    <Setter Property="Fill" Value="#00E676"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Ellipse.Style>
+                                </Ellipse>
+                                <TextBlock Grid.Column="1" Text="{Binding InterrogatorDeviceName}" 
+                                           FontWeight="SemiBold" FontSize="11" Foreground="#E0E0E0" TextTrimming="CharacterEllipsis"/>
+                            </Grid>
+                        </Border>
+
+                        <Grid Margin="0,0,0,8">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Border Grid.Column="0" Background="#1E1E22" CornerRadius="4" Padding="8,6" Margin="0,0,4,0">
+                                <StackPanel>
+                                    <TextBlock Text="Active Channels:" FontSize="11" Foreground="{StaticResource TextDimBrush}"/>
+                                    <TextBlock Text="{Binding InterrogatorActiveChannels, StringFormat={}{0} FBG Channels}" 
+                                               FontSize="15" FontWeight="Bold" Foreground="{StaticResource LabelBlueBrush}" Margin="0,3,0,0"/>
+                                </StackPanel>
+                            </Border>
+                            <Border Grid.Column="1" Background="#1E1E22" CornerRadius="4" Padding="8,6" Margin="4,0,0,0">
+                                <StackPanel>
+                                    <TextBlock Text="Sample Rate:" FontSize="11" Foreground="{StaticResource TextDimBrush}"/>
+                                    <TextBlock Text="{Binding InterrogatorFrequencyHz, StringFormat={}{0:0} Hz}" 
+                                               FontSize="16" FontWeight="Bold" Foreground="#00E676" Margin="0,2,0,0"/>
+                                </StackPanel>
+                            </Border>
+                        </Grid>
+
+                        <Border Background="#1E1E22" CornerRadius="4" Padding="10,7">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Grid.Column="0">
+                                    <TextBlock Text="{Binding InterrogatorState, StringFormat=State: {0}}" FontSize="11" Foreground="{StaticResource TextNormalBrush}"/>
+                                    <TextBlock Text="Peak Detect: Centroid" FontSize="10" Foreground="{StaticResource TextDimBrush}" Margin="0,2,0,0"/>
+                                </StackPanel>
+                                <StackPanel Grid.Column="1" HorizontalAlignment="Right">
+                                    <TextBlock Text="Wavelength: 1510-1590 nm" FontSize="11" Foreground="{StaticResource TextDimBrush}"/>
+                                    <TextBlock Text="Resolution: 1 pm" FontSize="10" Foreground="{StaticResource TextDimBrush}" Margin="0,2,0,0"/>
+                                </StackPanel>
+                            </Grid>
+                        </Border>
+                    </StackPanel>
+                </GroupBox>
+
+                <!-- WYSPA 6: OPTICAL POWER METER (OPM) -->
+                <GroupBox Margin="8,0,0,0">
+                    <GroupBox.Header>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="OPTICAL POWER METER" Foreground="{StaticResource TextDimBrush}" FontSize="12" FontWeight="Bold"/>
+                            <Button Grid.Column="1" Content="Open ➔" Style="{StaticResource ActionButtonStyle}"
+                                    Command="{Binding NavigateToTabCommand}" CommandParameter="Power Meter"
+                                    Padding="8,2" Margin="0" FontSize="11"/>
+                        </Grid>
+                    </GroupBox.Header>
+                    <StackPanel>
+                        <!-- Power Meter Status Pill -->
+                        <Border CornerRadius="6" Background="#1E1E22" BorderBrush="#38383D" BorderThickness="1" Padding="10,6" Margin="0,0,0,8">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Ellipse Grid.Column="0" Width="9" Height="9" Margin="0,0,7,0" VerticalAlignment="Center">
+                                    <Ellipse.Style>
+                                        <Style TargetType="Ellipse">
+                                            <Setter Property="Fill" Value="#777777"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsPowerMeterConnected}" Value="True">
+                                                    <Setter Property="Fill" Value="#00E676"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Ellipse.Style>
+                                </Ellipse>
+                                <TextBlock Grid.Column="1" Text="{Binding PowerMeterDeviceName}" 
+                                           FontWeight="SemiBold" FontSize="11" Foreground="#E0E0E0" TextTrimming="CharacterEllipsis"/>
+                            </Grid>
+                        </Border>
+
+                        <Border Background="#1E1E22" CornerRadius="4" Padding="10,8" Margin="0,0,0,8">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <StackPanel>
+                                    <TextBlock Text="Optical Power Reading:" FontSize="11" Foreground="{StaticResource TextDimBrush}"/>
+                                    <TextBlock Text="{Binding PowerMeterDbm, StringFormat={}{0:0.00} dBm}" 
+                                               FontSize="18" FontWeight="Bold" Foreground="{StaticResource LabelBlueBrush}" Margin="0,2,0,0"/>
+                                </StackPanel>
+                                <TextBlock Grid.Column="1" Text="{Binding PowerMeterWavelengthNm, StringFormat=λ: {0:0} nm}" 
+                                           FontSize="13" FontWeight="SemiBold" Foreground="{StaticResource TextNormalBrush}" VerticalAlignment="Center"/>
+                            </Grid>
+                        </Border>
+
+                        <Border Background="#1E1E22" CornerRadius="4" Padding="10,7">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Grid.Column="0">
+                                    <TextBlock Text="{Binding PowerMeterRange, StringFormat=Range: {0}}" FontSize="11" Foreground="{StaticResource TextNormalBrush}"/>
+                                    <TextBlock Text="Sensor: InGaAs Photodiode" FontSize="10" Foreground="{StaticResource TextDimBrush}" Margin="0,2,0,0"/>
+                                </StackPanel>
+                                <StackPanel Grid.Column="1" HorizontalAlignment="Right">
+                                    <TextBlock Text="Accuracy: ±0.15 dB" FontSize="11" Foreground="{StaticResource TextDimBrush}"/>
+                                    <TextBlock Text="Units: dBm / mW" FontSize="10" Foreground="{StaticResource TextDimBrush}" Margin="0,2,0,0"/>
+                                </StackPanel>
+                            </Grid>
+                        </Border>
+                    </StackPanel>
+                </GroupBox>
+            </UniformGrid>
+
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

@@ -1,7 +1,8 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CyberLab.Resources.Libraries;
 using ScottPlot.WPF;
 using System;
+using System.Net;
 using System.Windows;
 
 namespace CyberLab.ViewModels
@@ -18,6 +19,22 @@ namespace CyberLab.ViewModels
 
         [ObservableProperty]
         private string _ipAddress = "172.16.2.217";
+
+        [ObservableProperty]
+        private bool _isValidIp = true;
+
+        [ObservableProperty]
+        private string _deviceIdentity = "Not connected";
+
+        public ThermalChamberViewModel()
+        {
+            IsValidIp = IPAddress.TryParse(IpAddress?.Trim(), out _);
+        }
+
+        partial void OnIpAddressChanged(string value)
+        {
+            IsValidIp = IPAddress.TryParse(value?.Trim(), out _);
+        }
 
         [ObservableProperty]
         private string _targetTemperature;

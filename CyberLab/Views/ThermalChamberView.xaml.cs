@@ -19,6 +19,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 
 namespace CyberLab.Views
 {
@@ -150,6 +151,8 @@ namespace CyberLab.Views
 
                 if (IsStrictIPv4(currentIp))
                 {
+                    if (ConnectButton != null) ConnectButton.IsEnabled = false;
+
                     TC = new ThermalChamber(currentIp);
 
                     bool isSuccess = false;
@@ -166,7 +169,7 @@ namespace CyberLab.Views
                                 TC.SetOperatingMode(Mb1OperatingMode.Manual);
 
                                 fetchedSetPoint = TC.ReadSetPoint();
-                                fetchedStatus = Enum.GetName(TC.ReadOperatingMode());
+                                fetchedStatus = Enum.GetName(TC.ReadOperatingMode()) ?? "Manual";
 
                                 isSuccess = TC.IsConnected;
                                 break;
@@ -179,10 +182,14 @@ namespace CyberLab.Views
                         }
                     });
 
+                    if (ConnectButton != null) ConnectButton.IsEnabled = true;
+
                     if (isSuccess)
                     {
+                        if (ConnectButton != null) ConnectButton.Content = "Disconnect";
                         TCVM.CurrSetPoint = fetchedSetPoint;
                         TCVM.ThermalChamberStatus = fetchedStatus;
+                        TCVM.DeviceIdentity = $"MB1 Thermal Chamber ({currentIp})";
                         TCVM.IsConnected = true;
 
                         if (setPointLine == null)
@@ -201,6 +208,28 @@ namespace CyberLab.Views
                         TCVM.LocalTimer.Start();
                     }
                 }
+            }
+            else
+            {
+                TC.Disconnect();
+                TCVM.IsConnected = false;
+                TCVM.DeviceIdentity = "Not connected";
+                TCVM.ThermalChamberStatus = "Idle";
+                if (ConnectButton != null) ConnectButton.Content = "Connect";
+                TCVM.LocalTimer?.Stop();
+                App.isThermalChamberActive = false;
+            }
+        }
+
+        private void ipAddressTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (sender is TextBox tb)
+            {
+                string ip = tb.Text?.Trim() ?? string.Empty;
+                bool isValid = IsStrictIPv4(ip);
+                tb.BorderBrush = isValid ? (Brush)new BrushConverter().ConvertFromString("#555555")! : Brushes.Red;
+                if (ConnectButton != null) ConnectButton.IsEnabled = isValid;
+                if (TCVM != null) TCVM.IsValidIp = isValid;
             }
         }
 

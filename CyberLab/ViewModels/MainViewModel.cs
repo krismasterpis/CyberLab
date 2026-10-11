@@ -1,4 +1,4 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CyberLab.ViewModels;
 using System.Collections.ObjectModel;
@@ -16,8 +16,15 @@ namespace CyberLab.ViewModels
 
         public MainViewModel()
         {
+            DeviceViewModels.Add(new HomeViewModel(this));
             DeviceViewModels.Add(new ThermalChamberViewModel());
+            DeviceViewModels.Add(new TemperatureViewModel());
             DeviceViewModels.Add(new OsaViewModel());
+            DeviceViewModels.Add(new LasersViewModel());
+            DeviceViewModels.Add(new SwitchViewModel());
+            DeviceViewModels.Add(new InterrogatorViewModel());
+            DeviceViewModels.Add(new PowerMeterViewModel());
+            DeviceViewModels.Add(new CyberLabTabViewModel());
 
             SelectedDevice = DeviceViewModels.First();
         }

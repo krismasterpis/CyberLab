@@ -6,6 +6,7 @@
 
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="pack://application:,,,/CyberLab;component/Resources/IconDictionary.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/CyberLab;component/Resources/ComboBoxDictionary.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
     <!-- ==================== NAV BUTTON ==================== -->
@@ -136,6 +137,7 @@
                             <!-- Mode Selector ComboBox -->
                             <ComboBox Grid.Column="2" IsEnabled="{TemplateBinding IsSelectionEnabled}" 
                                       x:Name="OsaTraceControl_ComboBox" 
+                                      Style="{StaticResource DarkComboBoxStyle}"
                                       Width="74" Height="24" SelectedIndex="0" 
                                       VerticalContentAlignment="Center" HorizontalContentAlignment="Center"
                                       FontSize="11" Padding="2,1">

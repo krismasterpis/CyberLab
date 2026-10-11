@@ -11,11 +11,32 @@
         Background="#1E1E22" Foreground="#E0E0E0" WindowStartupLocation="CenterScreen" WindowState="Maximized">
 
     <Window.Resources>
+        <DataTemplate DataType="{x:Type viewmodels:HomeViewModel}">
+            <views:HomeView />
+        </DataTemplate>
         <DataTemplate DataType="{x:Type viewmodels:ThermalChamberViewModel}">
             <views:ThermalChamberView />
         </DataTemplate>
+        <DataTemplate DataType="{x:Type viewmodels:TemperatureViewModel}">
+            <views:TemperatureView />
+        </DataTemplate>
         <DataTemplate DataType="{x:Type viewmodels:OsaViewModel}">
             <views:OsaView />
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type viewmodels:LasersViewModel}">
+            <views:LasersView />
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type viewmodels:SwitchViewModel}">
+            <views:SwitchView />
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type viewmodels:InterrogatorViewModel}">
+            <views:InterrogatorView />
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type viewmodels:PowerMeterViewModel}">
+            <views:PowerMeterView />
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type viewmodels:CyberLabTabViewModel}">
+            <views:CyberLabTabView />
         </DataTemplate>
     </Window.Resources>
 
